@@ -1,8 +1,9 @@
 python-dotenv
 pandas
 numpy
-pymongo[srv]>=4.6.0
+pymongo>=4.6.0
 pymongo
 certifi
 seaborn
+scikit-learn
 
