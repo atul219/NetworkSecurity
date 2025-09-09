@@ -31,6 +31,7 @@ class DataValidation:
         
     def validate_number_of_columns(self, dataframe: pd.DataFrame) -> bool:
         try:
+            logging.info(f"Validating number of columns!!")
             number_of_columns = len(self._schema_config)
             logging.info(f"Required number of columns: {number_of_columns}")
             logging.info(f"DataFrame has columns: {dataframe.columns}")
@@ -42,7 +43,7 @@ class DataValidation:
     
     def detect_dataset_drift(self, base_df, current_df, threshold = 0.05) -> bool:
         try:
-            logging.info(f"Checking data drift")
+            logging.info(f"Checking data drift!!")
             status = True
             report = {}
             for column in base_df:
