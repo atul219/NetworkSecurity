@@ -11,7 +11,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import r2_score
-
+import mlflow
 
 class ModelTrainer:
     def __init__(self, data_transformation_artifact: DataTransformationArifact, 
@@ -21,6 +21,21 @@ class ModelTrainer:
             self.model_trainer_config = model_trainer_config
         except Exception as e:
             raise NetworkSecurityException(e, sys)
+
+    def track_mlflow(self, best_model, classification_train_metric, classification_test_metric):
+        with mlflow.start_run():
+            # Log training metrics
+            mlflow.log_metric("train_f1_score", classification_train_metric.f1_score)
+            mlflow.log_metric("train_precision_score", classification_train_metric.precision_score)
+            mlflow.log_metric("train_recall_score", classification_train_metric.recall_score)
+            
+            # Log test metrics
+            mlflow.log_metric("test_f1_score", classification_test_metric.f1_score)
+            mlflow.log_metric("test_precision_score", classification_test_metric.precision_score)
+            mlflow.log_metric("test_recall_score", classification_test_metric.recall_score)
+            
+            # Log the model
+            mlflow.sklearn.log_model(best_model, "model")
 
     def train_model(self, X_train, y_train, X_test, y_test):
         try:
@@ -83,12 +98,17 @@ class ModelTrainer:
                 y_pred= y_train_pred
             )
 
+           
+
             y_test_pred = best_model.predict(X_test)
 
             classification_test_metric = get_classification_score(
                 y_true= y_test,
                 y_pred= y_test_pred
             )
+
+            # tracking using mlflow for train and test
+            self.track_mlflow(best_model,  classification_train_metric, classification_test_metric)
 
             preprocessor = load_object(file_path= self.data_transformation_artifact.transformed_object_file_path)
 
