@@ -13,9 +13,10 @@ from starlette.responses import RedirectResponse
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logging.logger import logging
 from networksecurity.utils.main_utils.utils import load_object
-from networksecurity.constant.training_pipeline import DATA_INGESTION_COLLECTION_NAME, DATA_INGESTION_DATABASE_NAME
+from networksecurity.constant.training_pipeline import DATA_INGESTION_COLLECTION_NAME, DATA_INGESTION_DATABASE_NAME, TRAINING_BUCKET_NAME
 from networksecurity.pipeline.training_pipeline import TrainingPipeline
 from networksecurity.utils.ml_utils.model.estimator import NetworkModel
+from networksecurity.utils.main_utils.utils import load_object_from_s3, get_latest_model_files
 
 
 ca = certifi.where()
@@ -61,8 +62,12 @@ async def train_route():
 async def predict_route(request: Request, file: UploadFile = File(...)):
     try:
         df = pd.read_csv(file.file)
-        preprocessor = load_object("final_model/preprocessor.pkl")
-        final_model = load_object("final_model/model.pkl")
+        # Get the latest model files
+        preprocessor_key, model_key = get_latest_model_files()
+
+        preprocessor = load_object_from_s3(bucket_name= TRAINING_BUCKET_NAME, object_key= preprocessor_key)
+        final_model = load_object_from_s3(bucket_name= TRAINING_BUCKET_NAME ,object_key= model_key)
+
         network_model = NetworkModel(preprocessor= preprocessor, model= final_model)
         y_pred = network_model.predict(x= df)
         df['predicted_column'] = y_pred
