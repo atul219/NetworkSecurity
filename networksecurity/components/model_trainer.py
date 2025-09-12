@@ -110,7 +110,7 @@ class ModelTrainer:
             )
 
             # tracking using mlflow for train and test
-            self.track_mlflow(best_model,  classification_train_metric, classification_test_metric)
+            # self.track_mlflow(best_model,  classification_train_metric, classification_test_metric)
 
             preprocessor = load_object(file_path= self.data_transformation_artifact.transformed_object_file_path)
 
