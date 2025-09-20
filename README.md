@@ -233,14 +233,6 @@ python -m pytest tests/security/
 python -m pytest tests/performance/ -v
 ```
 
-## ⚠️ Legal Disclaimer
-
-This tool is for authorized security testing and monitoring only. Users must:
-- Obtain proper authorization before deployment
-- Comply with applicable laws and regulations
-- Use only on networks you own or have permission to monitor
-- Follow responsible disclosure practices
-
 ## 🤝 Contributing
 
 1. Fork the repository
