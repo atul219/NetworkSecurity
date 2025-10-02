@@ -100,7 +100,7 @@ python -m src.pipeline.training_pipeline
 
 ### Real-time Network Monitoring
 ```bash
-python -m src.pipeline.prediction_pipeline --interface eth0
+python -m src.pipeline.prediction_pipeline 
 ```
 
 ### Using Docker
